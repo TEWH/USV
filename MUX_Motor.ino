@@ -32,37 +32,47 @@ void setup(void)
   */
   drv1.selectLibrary(1);
   drv1.setMode(DRV2605_MODE_INTTRIG);
-   
+ 
   drv2.selectLibrary(1);
   drv2.setMode(DRV2605_MODE_INTTRIG);
-   
+
   drv3.selectLibrary(1);
   drv3.setMode(DRV2605_MODE_INTTRIG);
    
   drv0.selectLibrary(1);
   drv0.setMode(DRV2605_MODE_INTTRIG); 
+
+
+  Wire.begin(1);
+  Wire.begin(2);
+  Wire.begin(3);
+  Wire.begin(0);
 }
 void loop(void) 
 {
 
 
   tcaselect(1);
+
   drv1.setWaveform(0, 64);
   drv1.setWaveform(1,0);
   drv1.go();
 
   tcaselect(2);
+
   drv2.setWaveform(0, 64);
   drv2.setWaveform(1,0);
   drv2.go();
 
   tcaselect(3);
+  
   drv3.setWaveform(0, 64);
   drv3.setWaveform(1,0);
   drv3.go();
 
   tcaselect(0);
-  drv0.setWaveform(0, 65);
+  
+  drv0.setWaveform(0, 64);
   drv0.setWaveform(1,0);
   drv0.go();
 
