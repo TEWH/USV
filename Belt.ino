@@ -6,14 +6,13 @@ Adafruit_DRV2605 drv2;
 Adafruit_DRV2605 drv3;
 Adafruit_DRV2605 drv0;
 
+const int trigPin3 = 9;
+const int echoPin3 = 10;
+float durationLeft, distanceLeft;
 
-const int trigPin1 = 9;
-const int echoPin1 = 10;
-float duration1, distance1;
-
-const int trigPin2 = 11;
-const int echoPin2 = 12;
-float duration2, distance2;
+const int trigPin4 = 11;
+const int echoPin4 = 12;
+float durationRight, distanceRight;
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -23,16 +22,13 @@ void tcaselect(uint8_t i) {
   Wire.endTransmission();  
 }
 
-#define ledPin 7
-//uint8_t effect = 1;
-int leftFlag, leftValue, rightValue = 0;
-int rightFlag = 1;
+int leftValue, rightValue, LR = 0;
 void setup() {
-  pinMode(trigPin1, OUTPUT);
-  pinMode(echoPin1, INPUT);
+  pinMode(trigPin3, OUTPUT);
+  pinMode(echoPin3, INPUT);
 
-  pinMode(trigPin2, OUTPUT);
-  pinMode(echoPin2, INPUT);
+  pinMode(trigPin4, OUTPUT);
+  pinMode(echoPin4, INPUT);
   drv1.begin();
   drv2.begin();
   drv3.begin();
@@ -61,109 +57,201 @@ void setup() {
   Wire.begin(0);
 }
 void loop() {
+//******************For Upper Vibration Motors*****************
   if(Serial.available() > 0) { //Detected message from master
-    //Serial.println("Test");
-    if(leftFlag == 0 && rightFlag == 1) {
-      leftValue = Serial.read();
-      if(leftValue < 30) {
-          tcaselect(3);
-          drv3.begin();
-          drv3.setWaveform(0, 64);
-          drv3.setWaveform(1,0);
-          drv3.go();
+      LR = Serial.read();
+      Serial.println(LR);
+      if (LR%2 == 1){
+        //Serial.println(LR);
+          if(LR < 10) {
+            tcaselect(1);
+            drv1.begin();
+            drv1.setWaveform(0, 64);
+            drv1.setWaveform(1,0);
+            drv1.go();
+        }
+          else if(LR >= 10 && LR < 30) {
+            tcaselect(1);
+            drv1.begin();
+            drv1.setWaveform(0, 65);
+            drv1.setWaveform(1,0);
+            drv1.go();
+        }
+          else if(LR >= 30 && LR < 50) {
+            tcaselect(1);
+            drv1.begin();
+            drv1.setWaveform(0, 66);
+            drv1.setWaveform(1,0);
+            drv1.go();
+        }
+          else if(LR >= 50 && LR < 70) {
+            tcaselect(1);
+            drv1.begin();
+            drv1.setWaveform(0, 67);
+            drv1.setWaveform(1,0);
+            drv1.go();
+        }
+          else if(LR >= 70 && LR < 90) {
+            tcaselect(1);
+            drv1.begin();
+            drv1.setWaveform(0, 68);
+            drv1.setWaveform(1,0);
+            drv1.go();
+        }
+          else if(LR >= 90 && LR < 110) {
+            tcaselect(1);
+            drv1.begin();
+            drv1.setWaveform(0, 69);
+            drv1.setWaveform(1,0);
+            drv1.go();
+        }        
       }
-      
-      else if(leftValue > 30) {
-          tcaselect(3);
-          drv3.begin();
-          drv3.setWaveform(0, 68);
-          drv3.setWaveform(1,0);
-          drv3.go();
-      }
-      
-      Serial.print("Read left value: ");
-      Serial.println(leftValue);
-      leftFlag = 1;
-      rightFlag = 0;
-    }
-    else if(rightFlag == 0 && leftFlag == 1) {
-      rightValue = Serial.read();
-      if(rightValue < 30) {
-          tcaselect(1);
-          drv1.begin();
-          drv1.setWaveform(0, 64);
-          drv1.setWaveform(1,0);
-          drv1.go();
-      }
-      
-      else if(rightValue > 30) {
-          tcaselect(1);
-          drv1.begin();
-          drv1.setWaveform(0, 68);
-          drv1.setWaveform(1,0);
-          drv1.go();
-      }
-
-      
-      Serial.print("Read right value: ");
-      Serial.println(rightValue);
-      leftFlag = 0;
-      rightFlag = 1;    
+      else{
+        //Serial.println(LR);
+        //Serial.print("Right:");
+          if(LR < 10) {
+            tcaselect(3);
+            drv3.begin();
+            drv3.setWaveform(0, 64);
+            drv3.setWaveform(1,0);
+            drv3.go();
+        }
+          else if(LR >= 10 && LR < 30) {
+            tcaselect(3);
+            drv3.begin();
+            drv3.setWaveform(0, 65);
+            drv3.setWaveform(1,0);
+            drv3.go();
+        }
+          else if(LR >= 30 && LR < 50) {
+            tcaselect(3);
+            drv3.begin();
+            drv3.setWaveform(0, 66);
+            drv3.setWaveform(1,0);
+            drv3.go();
+        }
+          else if(LR >= 50 && LR < 70) {
+            tcaselect(3);
+            drv3.begin();
+            drv3.setWaveform(0, 67);
+            drv3.setWaveform(1,0);
+            drv3.go();
+        }
+          else if(LR >= 70 && LR < 90) {
+            tcaselect(3);
+            drv3.begin();
+            drv3.setWaveform(0, 68);
+            drv3.setWaveform(1,0);
+            drv3.go();
+        }
+          else if(LR >= 90 && LR < 110) {
+            tcaselect(3);
+            drv3.begin();
+            drv3.setWaveform(0, 69);
+            drv3.setWaveform(1,0);
+            drv3.go();
+        }                    
+      }          
     } 
-  }
-}
-/*
-    
-  }
 
-  digitalWrite(trigPin1, LOW);
+//***************For Lower Vibration Motors & Ultrasonic Sensors on Belt****************
+  digitalWrite(trigPin3, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin1, HIGH);
+  digitalWrite(trigPin3, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin1, LOW);   
-  duration1 = pulseIn(echoPin1, HIGH);
-  distance1 = (duration1*.0343)/2;
-
-  if (distance1 < 20){
+  digitalWrite(trigPin3, LOW);   
+  durationLeft = pulseIn(echoPin3, HIGH);
+  distanceLeft = (durationLeft*.0343)/2;
+  if (distanceLeft < 10){
           tcaselect(0);
           drv0.begin();
-          drv0.setWaveform(0, 64);
+          drv0.setWaveform(0, 58);
           drv0.setWaveform(1,0);
           drv0.go();    
-    //delayMicroseconds(500);
-    //delayMicroseconds(4000);
   }
-  else if(distance1 > 20) {
+  else if(distanceLeft >= 10 && distanceLeft < 30) {
           tcaselect(0);
           drv0.begin();
-          drv0.setWaveform(0, 68);
+          drv0.setWaveform(0, 59);
           drv0.setWaveform(1,0);
           drv0.go();
   }
-  digitalWrite(trigPin2, LOW);
+  else if(distanceLeft >= 30 && distanceLeft < 50) {
+          tcaselect(0);
+          drv0.begin();
+          drv0.setWaveform(0, 60);
+          drv0.setWaveform(1,0);
+          drv0.go();
+  }
+  else if(distanceLeft >= 50 && distanceLeft < 70) {
+          tcaselect(0);
+          drv0.begin();
+          drv0.setWaveform(0, 61);
+          drv0.setWaveform(1,0);
+          drv0.go();
+  }
+  else if(distanceLeft >= 70 && distanceLeft < 90) {
+          tcaselect(0);
+          drv0.begin();
+          drv0.setWaveform(0, 62);
+          drv0.setWaveform(1,0);
+          drv0.go();
+  }
+  else if(distanceLeft >= 90 && distanceLeft < 110) {
+          tcaselect(0);
+          drv0.begin();
+          drv0.setWaveform(0, 63);
+          drv0.setWaveform(1,0);
+          drv0.go();
+  }
+  
+  digitalWrite(trigPin4, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin2, HIGH);
+  digitalWrite(trigPin4, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin2, LOW);   
-  duration2 = pulseIn(echoPin2, HIGH);
-  distance2 = (duration2*.0343)/2;
-
-  if (distance2 < 20){
+  digitalWrite(trigPin4, LOW);   
+  durationRight = pulseIn(echoPin4, HIGH);
+  distanceRight = (durationRight*.0343)/2;
+  if (distanceRight < 10){
           tcaselect(2);
           drv2.begin();
-          drv2.setWaveform(0, 64);
+          drv2.setWaveform(0, 58);
           drv2.setWaveform(1,0);
           drv2.go();    
-    //delayMicroseconds(500);
-    //delayMicroseconds(4000);
   }
-  else if(distance2 > 20) {
+  else if(distanceRight >= 10 && distanceRight < 30) {
           tcaselect(2);
           drv2.begin();
-          drv2.setWaveform(0, 68);
+          drv2.setWaveform(0, 59);
           drv2.setWaveform(1,0);
           drv2.go();
   }
-
+  else if(distanceRight >= 30 && distanceRight < 50) {
+          tcaselect(2);
+          drv2.begin();
+          drv2.setWaveform(0, 60);
+          drv2.setWaveform(1,0);
+          drv2.go();
+  }
+  else if(distanceRight >= 50 && distanceRight < 70) {
+          tcaselect(2);
+          drv2.begin();
+          drv2.setWaveform(0, 61);
+          drv2.setWaveform(1,0);
+          drv2.go();
+  }
+  else if(distanceRight >= 70 && distanceRight < 90) {
+          tcaselect(2);
+          drv2.begin();
+          drv2.setWaveform(0, 62);
+          drv2.setWaveform(1,0);
+          drv2.go();
+  }
+  else if(distanceRight >= 90 && distanceRight < 110) {
+          tcaselect(2);
+          drv2.begin();
+          drv2.setWaveform(0, 63);
+          drv2.setWaveform(1,0);
+          drv2.go();
+  }  
 } 
-*/
