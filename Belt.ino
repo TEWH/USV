@@ -8,11 +8,15 @@ Adafruit_DRV2605 drv0;
 
 const int trigPin3 = 9;
 const int echoPin3 = 10;
-float durationLeft, distanceLeft;
+float durationLeft, distanceLeft, dL;
+int lim;
+float leftArray[20] = {};
 
 const int trigPin4 = 11;
 const int echoPin4 = 12;
-float durationRight, distanceRight;
+float durationRight, distanceRight, dR;
+float rightArray[20] = {};
+
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -22,7 +26,31 @@ void tcaselect(uint8_t i) {
   Wire.endTransmission();  
 }
 
-int leftValue, rightValue, LR = 0;
+int LR = 0;
+
+
+float readLeft(){
+  digitalWrite(trigPin3, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin3, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin3, LOW);   
+  durationLeft = pulseIn(echoPin3, HIGH);
+  dL = (durationLeft*.0343)/2;
+  return dL;
+}
+
+float readRight(){
+  digitalWrite(trigPin4, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin4, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin4, LOW);   
+  durationRight = pulseIn(echoPin4, HIGH);
+  dR = (durationRight*.0343)/2;
+  return dR;
+}
+
 void setup() {
   pinMode(trigPin3, OUTPUT);
   pinMode(echoPin3, INPUT);
@@ -55,7 +83,20 @@ void setup() {
   Wire.begin(3);
   tcaselect(0);
   Wire.begin(0);
+
+  //************Calibration to ground approx. 5 seconds***************
+  for (int k = 0; k < 20; k++){
+    leftArray[k] = readLeft();
+    rightArray[k] = readRight();
+    delay(250);    
+  }
+  int sum = leftArray[0] + rightArray[0];
+  for (int j = 1; j < 20; j++){
+    sum = sum + leftArray[j] + rightArray[j]; 
+  }
+  lim = sum / 40;
 }
+
 void loop() {
 //******************For Upper Vibration Motors*****************
   if(Serial.available() > 0) { //Detected message from master
@@ -70,35 +111,35 @@ void loop() {
             drv1.setWaveform(1,0);
             drv1.go();
         }
-          else if(LR >= 10 && LR < 30) {
+          else if(LR >= 10 && LR < 20) {
             tcaselect(1);
             drv1.begin();
             drv1.setWaveform(0, 65);
             drv1.setWaveform(1,0);
             drv1.go();
         }
-          else if(LR >= 30 && LR < 50) {
+          else if(LR >= 20 && LR < 40) {
             tcaselect(1);
             drv1.begin();
             drv1.setWaveform(0, 66);
             drv1.setWaveform(1,0);
             drv1.go();
         }
-          else if(LR >= 50 && LR < 70) {
+          else if(LR >= 40 && LR < 80) {
             tcaselect(1);
             drv1.begin();
             drv1.setWaveform(0, 67);
             drv1.setWaveform(1,0);
             drv1.go();
         }
-          else if(LR >= 70 && LR < 90) {
+          else if(LR >= 80 && LR < 140) {
             tcaselect(1);
             drv1.begin();
             drv1.setWaveform(0, 68);
             drv1.setWaveform(1,0);
             drv1.go();
         }
-          else if(LR >= 90 && LR < 110) {
+          else if(LR >= 140 && LR < 200) {
             tcaselect(1);
             drv1.begin();
             drv1.setWaveform(0, 69);
@@ -123,28 +164,28 @@ void loop() {
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 30 && LR < 50) {
+          else if(LR >= 30 && LR < 60) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 66);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 50 && LR < 70) {
+          else if(LR >= 60 && LR < 100) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 67);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 70 && LR < 90) {
+          else if(LR >= 100 && LR < 150) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 68);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 90 && LR < 110) {
+          else if(LR >= 150 && LR < 200) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 69);
@@ -155,13 +196,8 @@ void loop() {
     } 
 
 //***************For Lower Vibration Motors & Ultrasonic Sensors on Belt****************
-  digitalWrite(trigPin3, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin3, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin3, LOW);   
-  durationLeft = pulseIn(echoPin3, HIGH);
-  distanceLeft = (durationLeft*.0343)/2;
+  int interval = (lim - 10) / 5;
+  distanceLeft = readLeft();
   if (distanceLeft < 10){
           tcaselect(0);
           drv0.begin();
@@ -169,35 +205,35 @@ void loop() {
           drv0.setWaveform(1,0);
           drv0.go();    
   }
-  else if(distanceLeft >= 10 && distanceLeft < 30) {
+  else if(distanceLeft >= 10 && distanceLeft < (lim - (4*interval))) {
           tcaselect(0);
           drv0.begin();
           drv0.setWaveform(0, 59);
           drv0.setWaveform(1,0);
           drv0.go();
   }
-  else if(distanceLeft >= 30 && distanceLeft < 50) {
+  else if(distanceLeft >= (lim - (4*interval)) && distanceLeft < (lim - (3*interval))) {
           tcaselect(0);
           drv0.begin();
           drv0.setWaveform(0, 60);
           drv0.setWaveform(1,0);
           drv0.go();
   }
-  else if(distanceLeft >= 50 && distanceLeft < 70) {
+  else if(distanceLeft >= (lim - (3*interval)) && distanceLeft < (lim - (2*interval))) {
           tcaselect(0);
           drv0.begin();
           drv0.setWaveform(0, 61);
           drv0.setWaveform(1,0);
           drv0.go();
   }
-  else if(distanceLeft >= 70 && distanceLeft < 90) {
+  else if(distanceLeft >= (lim - (2*interval)) && distanceLeft < (lim - interval)) {
           tcaselect(0);
           drv0.begin();
           drv0.setWaveform(0, 62);
           drv0.setWaveform(1,0);
           drv0.go();
   }
-  else if(distanceLeft >= 90 && distanceLeft < 110) {
+  else if(distanceLeft >= (lim - interval) && distanceLeft < lim) {
           tcaselect(0);
           drv0.begin();
           drv0.setWaveform(0, 63);
@@ -205,13 +241,7 @@ void loop() {
           drv0.go();
   }
   
-  digitalWrite(trigPin4, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin4, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin4, LOW);   
-  durationRight = pulseIn(echoPin4, HIGH);
-  distanceRight = (durationRight*.0343)/2;
+  distanceRight = readRight();
   if (distanceRight < 10){
           tcaselect(2);
           drv2.begin();
@@ -219,35 +249,35 @@ void loop() {
           drv2.setWaveform(1,0);
           drv2.go();    
   }
-  else if(distanceRight >= 10 && distanceRight < 30) {
+  else if(distanceRight >= 10 && distanceRight < (lim - (4*interval))) {
           tcaselect(2);
           drv2.begin();
           drv2.setWaveform(0, 59);
           drv2.setWaveform(1,0);
           drv2.go();
   }
-  else if(distanceRight >= 30 && distanceRight < 50) {
+  else if(distanceRight >= (lim - (4*interval)) && distanceRight < (lim - (3*interval))) {
           tcaselect(2);
           drv2.begin();
           drv2.setWaveform(0, 60);
           drv2.setWaveform(1,0);
           drv2.go();
   }
-  else if(distanceRight >= 50 && distanceRight < 70) {
+  else if(distanceRight >= (lim - (3*interval)) && distanceRight < (lim - (2*interval))) {
           tcaselect(2);
           drv2.begin();
           drv2.setWaveform(0, 61);
           drv2.setWaveform(1,0);
           drv2.go();
   }
-  else if(distanceRight >= 70 && distanceRight < 90) {
+  else if(distanceRight >= (lim - (2*interval)) && distanceRight < (lim - interval)) {
           tcaselect(2);
           drv2.begin();
           drv2.setWaveform(0, 62);
           drv2.setWaveform(1,0);
           drv2.go();
   }
-  else if(distanceRight >= 90 && distanceRight < 110) {
+  else if(distanceRight >= (lim - interval) && distanceRight < lim) {
           tcaselect(2);
           drv2.begin();
           drv2.setWaveform(0, 63);
