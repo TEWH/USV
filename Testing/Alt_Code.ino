@@ -108,35 +108,35 @@ void loop() {
     drv3.setWaveform(1,0);
     drv3.go();
   }
-  else if(distance2 >= 10 && distance2 < 30) {
+  else if(distance2 >= 10 && distance2 < 20) {
     tcaselect(3);
     drv3.begin();
     drv3.setWaveform(0, 65);
     drv3.setWaveform(1,0);
     drv3.go();
   }
-  else if(distance2 >= 30 && distance2 < 60) {
+  else if(distance2 >= 20 && distance2 < 40) {
     tcaselect(3);
     drv3.begin();
     drv3.setWaveform(0, 66);
     drv3.setWaveform(1,0);
     drv3.go();
   }
-  else if(distance2 >= 60 && distance2 < 100) {
+  else if(distance2 >= 40 && distance2 < 80) {
     tcaselect(3);
     drv3.begin();
     drv3.setWaveform(0, 67);
     drv3.setWaveform(1,0);
     drv3.go();
   }
-  else if(distance2 >= 100 && distance2 < 150) {
+  else if(distance2 >= 80 && distance2 < 140) {
     tcaselect(3);
     drv3.begin();
     drv3.setWaveform(0, 68);
     drv3.setWaveform(1,0);
     drv3.go();
   }
-  else if(distance2 >= 150 && distance2 < 200) {
+  else if(distance2 >= 140 && distance2 < 200) {
     tcaselect(3);
     drv3.begin();
     drv3.setWaveform(0, 69);
