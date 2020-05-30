@@ -157,35 +157,35 @@ void loop() {
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 10 && LR < 30) {
+          else if(LR >= 10 && LR < 20) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 65);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 30 && LR < 60) {
+          else if(LR >= 20 && LR < 40) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 66);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 60 && LR < 100) {
+          else if(LR >= 40 && LR < 80) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 67);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 100 && LR < 150) {
+          else if(LR >= 80 && LR < 140) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 68);
             drv3.setWaveform(1,0);
             drv3.go();
         }
-          else if(LR >= 150 && LR < 200) {
+          else if(LR >= 140 && LR < 200) {
             tcaselect(3);
             drv3.begin();
             drv3.setWaveform(0, 69);
